@@ -136,7 +136,7 @@ int do_fantasy(int ac, char **av) {
 		if (ac == 3)
 			moduleNoticeLang(ci->bi->nick, u, LANG_REDIRECT_SYNTAX, BSFantasyCharacter);
 		else {
-			if (is_services_admin(u)) {
+			if (is_services_oper(u)) {
 				/* Get the arguments: nick and the remainder is channel to go to. */
 				char *arg1 = myStrGetToken(av[3],' ',0);
 				char *arg2 = myStrGetTokenRemainder(av[3],' ',1);
@@ -184,7 +184,7 @@ int do_fantasy_denied(int ac, char **av) {
 		if (ac == 3)
 			moduleNoticeLang(ci->bi->nick, u, LANG_REDIRECT_SYNTAX, BSFantasyCharacter);
 		else {
-			if (is_services_admin(u)) {
+			if (is_services_oper(u)) {
 				char *arg1 = myStrGetToken(av[3],' ',0);
 				char *arg2 = myStrGetTokenRemainder(av[3],' ',1);
 
@@ -230,7 +230,7 @@ void do_redirect(User *u, Channel *c, char *nick, char *c2) {
 	moduleNoticeLang(c->ci->bi->nick, u, LANG_REDIRECTING, nick, c->name, c2);
 
 	/* make some noise to prevent abusers */
-	wallops(c->ci->bi->nick, "%s used SVSPART to part %s from %s.", u->nick, nick, c->name);
+	wallops(c->ci->bi->nick, "%s redirected %s from channel %s to channel %s .", u->nick, nick, c->name , c2);
 	moduleNoticeLang(s_ChanServ, target, LANG_FORCE_REDIRECT, c->name, c2,u->nick);
 
 	/* Force them out */
