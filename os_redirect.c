@@ -1,3 +1,29 @@
+/**
+ * -----------------------------------------------------------------------------
+ * Name    : os_redirect
+ * Author  : VisioN  <vision@myirc.net>
+ * Date: 24/1/2012   Last Updated: 15/1/2012
+ * Version : 1.0
+ * -----------------------------------------------------------------------------
+ * Limitations : Any IRCd which supports SVSPART and SVSJOIN
+ * Requires    : Anope 1.8.7
+ * Tested      : Anope 1.8.7 + UnrealIRCd 3.2.8 & UnrealIRCD 3.2.9
+ * -----------------------------------------------------------------------------
+ * This module creates the /os redirect command.
+ * The command syntax is /os redirect user #from_channel #to_channel
+ * This command makes the user part the #from_channel and join the #to_channel.
+ * 
+ * -----------------------------------------------------------------------------
+ * Changelog:
+ *
+ *   1.0 - Initial Module Release
+ *
+ *   
+ *
+ * -----------------------------------------------------------------------------
+ **/
+
+
 #include "module.h"
 #define AUTHOR "VisioN"
 #define VERSION "1.0"
