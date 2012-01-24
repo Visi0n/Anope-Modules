@@ -59,7 +59,13 @@
      char *chan1 = myStrGetToken (buf,' ', 1);
      char *chan2 = myStrGetToken (buf,' ', 2);
      
-     if (!u ||!chan1||!nick||!chan2) return MOD_STOP;
+     if (!u ||!chan1||!nick||!chan2)
+     {
+                  if (nick) free(nick);
+                  if (chan1) free(chan1);
+                  if (chan2) free(chan2);
+                  return MOD_STOP;
+     }
      if (!(target = finduser(nick))) 
      {
                   notice (s_OperServ, u->nick,"No such user to redirect");
