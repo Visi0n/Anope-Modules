@@ -32,8 +32,33 @@
  
  int AnopeInit(int argc, char **argv) {
      /* We create the command we're going to use */
+     int req_access = 1;
+     char *usermsg = 
+     Directive conf[]= 
+     {
+               {"RedirectAccess",{ { PARAM_INT, PARAM_RELOAD, &req_access } } }
+     };
+
+     moduleGetConfigDirective(conf);
+     
      Command *c;
-     c = createCommand("redirect", do_redirect,is_services_oper, -1, -1, -1, -1, -1);
+     if ((req_access!=0) && (req_access!=1) && (req_access!=2)) req_access=1;
+     if (req_access==0)
+     {                  
+          c = createCommand("redirect", do_redirect,NULL, -1, -1, -1, -1, -1);
+          alog("Loading os_redirect with restriction to noone");
+     }
+     else if (req_access==1)
+     { 
+          c = createCommand("redirect", do_redirect,is_services_oper, -1, -1, -1, -1, -1);
+          alog("Loading os_redirect with restriction to services operators");
+     }
+     else if (req_access==2) 
+     {
+          c = createCommand("redirect", do_redirect,is_services_admin, -1, -1, -1, -1, -1);
+          alog("Loading os_redirect with restriction to services administrators");
+     }
+          
  
      /* We add the command to HelpServ and log it */
      alog("os_redirect: Add command 'redirect' status: %d", moduleAddCommand(OPERSERV, c, MOD_HEAD));
