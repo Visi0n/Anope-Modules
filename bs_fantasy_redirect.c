@@ -32,8 +32,8 @@
 
 #include "module.h"
 
-#define AUTHOR "VisioN"
-#define VERSION "1.0"
+#define AUTHOR "VisioN v1.1"
+#define VERSION "1.1"
 
 
 /* Language defines */
@@ -49,7 +49,6 @@
 
 /* Functions */
 int do_fantasy(int ac, char **av);
-int do_fantasy_denied(int ac, char **av);
 void do_redirect(User *u, Channel *c, char *nick, char *c2);
 int valid_ircd(void);
 void add_languages(void);
@@ -82,12 +81,6 @@ int AnopeInit(int argc, char **argv) {
 	hook = createEventHook(EVENT_BOT_FANTASY, do_fantasy);
 	if (moduleAddEventHook(hook) != MOD_ERR_OK) {
 		alog("[\002bs_fantasy_redirect\002] Can't hook to EVENT_BOT_FANTASY event");
-		return MOD_STOP;
-	}
-
-	hook = createEventHook(EVENT_BOT_FANTASY_NO_ACCESS, do_fantasy_denied);
-	if (moduleAddEventHook(hook) != MOD_ERR_OK) {
-		alog("[\002bs_fantasy_redirect\002] Can't hook to EVENT_BOT_FANTASY_NO_ACCESS event");
 		return MOD_STOP;
 	}
 
@@ -159,51 +152,6 @@ int do_fantasy(int ac, char **av) {
 }
 
 
-/**
- * Handles all denied fantasy commands.
- * Here we ll identify the command and call the right routines.
- **/
-int do_fantasy_denied(int ac, char **av) {
-	User *u;
-	ChannelInfo *ci;
-	Channel *c;
-
-	/* Some basic error checking... should never match */
-	if (ac < 3)
-		return MOD_CONT;
-
-	if (!(ci = cs_findchan(av[2])))
-		return MOD_CONT;
-	if (!(u = finduser(av[1])))
-		return MOD_CONT;
-	if (!(c = findchan(ci->name)))
-		return MOD_CONT;
-
-	if (stricmp(av[0], "redirect") == 0) {
-		/* If executed without any params, show help */
-		if (ac == 3)
-			moduleNoticeLang(ci->bi->nick, u, LANG_REDIRECT_SYNTAX, BSFantasyCharacter);
-		else {
-			if (is_services_oper(u)) {
-				char *arg1 = myStrGetToken(av[3],' ',0);
-				char *arg2 = myStrGetTokenRemainder(av[3],' ',1);
-
-				if (!arg1 || !arg2)
-					moduleNoticeLang(ci->bi->nick, u, LANG_REDIRECT_SYNTAX, BSFantasyCharacter);
-				else
-					do_redirect(u, c, arg1, arg2);
-
-				if (arg1) free(arg1);
-				if (arg2) free(arg2);
-			} else
-				notice_lang(ci->bi->nick, u, PERMISSION_DENIED);
-
-		}
-	}
-
-	/* Continue processig event.. maybe other modules want it too */
-	return MOD_CONT;
-}
 
 /* ------------------------------------------------------------------------------- */
 
